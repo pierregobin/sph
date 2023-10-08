@@ -1,0 +1,9 @@
+
+**/simWorkspace
+**/SimWorkspace
+**/.bsp
+**/project
+**/rtl
+**/target
+**/tmp
+.nvim

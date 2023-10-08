@@ -24,9 +24,10 @@ case class CounterMem(width: Int) extends Component {
     val value = out UInt(width bits)
     val full = out Bool()
   }
-  val memory = Mem(Bits(32 bits), 32)
+  val memory = Mem(Bits(32 bits),1 << width)
   val counter = Reg(UInt(width bits)) init(0)
 
+  memory(counter) := B(100-counter,32 bits)
   counter := (counter + 1) & ((U"1" << width) - 1).resize(width)
   when(io.clean) {
     counter := 0

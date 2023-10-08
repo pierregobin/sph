@@ -34,7 +34,7 @@ object TestCounter extends App {
 }
 
 object TestCounterMem extends App {
-  SimConfig.withWave.compile(new CounterMem(4)).doSim {
+  SimConfig.withWave.compile(new CounterMem(5)).doSim {
     dut =>
     dut.clockDomain.forkStimulus(32)
       for (a <- 0 to 31) {

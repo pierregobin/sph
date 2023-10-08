@@ -15,30 +15,35 @@ case class Fibo(maxi: Int) extends Component {
     val counter=Reg(UInt(log2Up(maxi) bits)) init(0)
     val fibo0 = Reg(UInt(32 bits)) init(0)
     val fibo1 = Reg(UInt(32 bits)) init(1)
+    val done = Reg(Bool) init(False)
+    val computeDone = Reg(Bool) init(False)
+    io.data := B(fibo1)
+    io.address := B(counter)
+    io.initDone := done
+    io.computeDone := computeDone
 
     val initFSM : State = new State with EntryPoint {
-    io.initDone := False
-      when(io.start) {
-        goto(initMem)
+      onEntry(done := False)
+      whenIsActive {
+        when(io.start) {
+          goto(initMem)
+        }
       }
     }
     val initMem : State = new State {
       onEntry(counter := 0)
+      onEntry(computeDone := False)
       whenIsActive {
-        io.data := 0
-        io.address := B(counter)
         counter := counter + 1
         when(counter === maxi) {
           goto(computeMem)
         }
       }
-      onExit(io.initDone := True)
+      onExit(done := True)
     }
     val computeMem : State = new State {
       onEntry(counter := 0)
       whenIsActive {
-        io.data := B(fibo1)
-        io.address := B(counter)
         fibo0 := fibo1
         fibo1 := fibo0 + fibo1
         counter := counter+1
@@ -46,7 +51,7 @@ case class Fibo(maxi: Int) extends Component {
           goto(initFSM)
         }
       }
-      onExit(io.computeDone := True)
+      onExit(computeDone := True)
     }
 
   }
